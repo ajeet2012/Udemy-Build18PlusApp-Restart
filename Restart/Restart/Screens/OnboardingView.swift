@@ -18,6 +18,9 @@ struct OnboardingView: View {
     @State private var imageOffset: CGSize = .zero
     @State private var indicatorOpacity: Double = 1.0
     @State private var textTitle: String = "Share."
+    
+    let haptickFeedback = UINotificationFeedbackGenerator()
+    
     //MARK: - Body
     var body: some View {
         ZStack {
@@ -160,10 +163,13 @@ struct OnboardingView: View {
                                 .onEnded{ _ in
                                     withAnimation(Animation.easeOut(duration: 0.4)){
                                         if buttonOffset > buttonWidth / 2.0 {
+                                            haptickFeedback.notificationOccurred(.success)
+                                            playSound(fileName: "chimeup", type: "mp3")
                                             buttonOffset = buttonWidth - 80.0
                                             isOnboardingViewActive = false
                                         }
                                         else {
+                                            haptickFeedback.notificationOccurred(.warning)
                                             buttonOffset = 0
                                         }
                                     }
@@ -183,6 +189,7 @@ struct OnboardingView: View {
         .onAppear {
             isAnimating = true
         }
+        .preferredColorScheme(.dark)
         
     }
 }
